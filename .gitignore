@@ -17,3 +17,5 @@ temp/
 
 # IDE or editor directories and files
 .idea/
+
+*.rest
