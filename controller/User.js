@@ -9,7 +9,14 @@ export const getUserById = async (req, res) => {
   });
   return res.json(user);
 };
-export const createUser = (req, res) => {};
+
+export const createUser = async (req, res) => {
+  const user = req.body;
+  const createUser = await prisma.user.create({
+    data: user,
+  });
+  return res.json("succes");
+};
 
 export const editUser = (req, res) => {};
 
