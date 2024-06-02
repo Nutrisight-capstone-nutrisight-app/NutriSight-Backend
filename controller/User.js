@@ -1,24 +1,16 @@
-import { users } from "../model/User.js";
+import prisma from "../prisma/client.js";
 
-export const getAllUsers = (req, res) => {
-  return res.json(users);
-};
-
-export const getUserById = (req, res) => {
+export const getUserById = async (req, res) => {
   const id = req.params.id;
-  const user = users.filter((user) => user.id == id)[0];
+  const user = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
   return res.json(user);
 };
+export const createUser = (req, res) => {};
 
-export const editUser = (req, res) => {
+export const editUser = (req, res) => {};
 
-}
-
-export const createUser = (req, res) => {
-
-}
-
-export const deleteUser = (req, res) => {
-
-}
-
+export const deleteUser = (req, res) => {};

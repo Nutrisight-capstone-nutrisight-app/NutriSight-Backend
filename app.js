@@ -11,10 +11,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // URL Handling
 app.get("/", (req, res) => {
-  res.send("Request Success");
+  res.json("Request Success");
 });
 app.use("/user", routerUser);
 
+
+// Run Application 
 app.listen(port, () => {
-  console.log(`Example app listening on http://localhost:${port}`);
+  console.log(`NutriSight_Backend listening on http://localhost:${port}`);
 });
