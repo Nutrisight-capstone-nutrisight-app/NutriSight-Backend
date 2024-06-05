@@ -12,16 +12,16 @@ export const getUserById = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-  if (res.body?.name === undefined) {
+  if (req.body.name === undefined) {
     return res.status(400).send("Please insert name");
   }
-  if (res.body?.email === undefined) {
+  if (req.body.email === undefined) {
     return res.status(400).send("Please insert email");
   }
-  if (res.body?.usename === undefined) {
+  if (req.body.username === undefined) {
     return res.status(400).send("Please insert username");
   }
-  if (res.body?.password === undefined) {
+  if (req.body.password === undefined) {
     return res.status(400).send("Please insert password");
   }
 
@@ -39,6 +39,36 @@ export const createUser = async (req, res) => {
   return res.json("succes");
 };
 
-export const editUser = (req, res) => {};
+export const editUser = async (req, res) => {
+  try {
+    const saltRound = 10;
+    const password = await bcrypt.hash(req.body.password, saltRound);
+    req.body.password = password;
+  } catch (error) {
+    console.error("Error hashing password:", error);
+  }
+  try {
+    const id = req.params.id;
+    const user = req.body;
+    const editUser = await prisma.user.update({
+      where: {
+        id: id,
+      },
 
-export const deleteUser = (req, res) => {};
+      data: user,
+    });
+  } catch (error) {
+    console.error("Error update user", error);
+  }
+  return res.json("success");
+};
+
+export const deleteUser = async (req, res) => {
+  const id = req.params.id;
+  const user = await prisma.user.delete({
+    where: {
+      id: id,
+    },
+  });
+  return res.json("user has been deleted");
+};
