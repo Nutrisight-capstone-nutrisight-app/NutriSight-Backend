@@ -1,4 +1,5 @@
 import prisma from "../prisma/client.js";
+import { Prisma } from "../prisma/client.js";
 import bcrypt from "bcrypt";
 
 export const getUserById = async (req, res) => {
@@ -11,18 +12,19 @@ export const getUserById = async (req, res) => {
   return res.json(user);
 };
 
-
-
 export const editUser = async (req, res) => {
+  const id = req.params.id;
+
   try {
     const saltRound = 10;
     const password = await bcrypt.hash(req.body.password, saltRound);
     req.body.password = password;
   } catch (error) {
-    console.error("Error hashing password:", error);
+    console.error("Error hashing password : ", error);
+    return res.status(500).json({ message: "Server error" });
   }
+
   try {
-    const id = req.params.id;
     const user = req.body;
     const editUser = await prisma.user.update({
       where: {
@@ -32,17 +34,41 @@ export const editUser = async (req, res) => {
       data: user,
     });
   } catch (error) {
-    console.error("Error update user", error);
+    console.error("Error update user : ", error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        console.log(
+          "There is a unique constraint violation, a new user cannot be created with this email or username"
+        );
+        return res.status(400).json({
+          message: "Email or username already exist",
+        });
+      }
+      if (error.code === "P2025") {
+        console.log("User not Found");
+        return res.status(404).json({ message: "User not Found" });
+      }
+    }
   }
-  return res.json("success");
+
+  return res.json({ message: "User successfully edited" });
 };
 
 export const deleteUser = async (req, res) => {
   const id = req.params.id;
-  const user = await prisma.user.delete({
-    where: {
-      id: id,
-    },
-  });
-  return res.json("user has been deleted");
+  try {
+    const user = await prisma.user.delete({
+      where: {
+        id: id,
+      },
+    });
+    return res.json({ message: "user has been deleted" });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        console.error(error);
+        return res.status(404).json({ message: "User not Found" });
+      }
+    }
+  }
 };

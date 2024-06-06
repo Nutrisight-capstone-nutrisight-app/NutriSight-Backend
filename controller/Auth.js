@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export const authenticate = async (req, res) => {
+  console.log(req.body);
   const { email, password } = req.body;
 
   try {
