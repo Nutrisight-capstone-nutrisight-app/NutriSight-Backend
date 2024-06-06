@@ -1,5 +1,6 @@
 import express from "express";
 import { routerUser } from "./routes/User.js";
+import { routerAuth } from "./routes/Auth.js";
 
 // Express Setting
 const app = express();
@@ -14,6 +15,7 @@ app.get("/", (req, res) => {
   res.json("Request Success");
 });
 app.use("/user", routerUser);
+app.use("/", routerAuth);
 
 
 // Run Application 

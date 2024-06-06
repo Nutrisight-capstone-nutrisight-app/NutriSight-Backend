@@ -12,16 +12,14 @@ export const getUserById = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-  if (res.body?.name === undefined) {
-    return res.status(400).send("Please insert name");
-  }
-  if (res.body?.email === undefined) {
+  
+  if (req.body?.email === undefined) {
     return res.status(400).send("Please insert email");
   }
-  if (res.body?.usename === undefined) {
+  if (req.body?.username === undefined) {
     return res.status(400).send("Please insert username");
   }
-  if (res.body?.password === undefined) {
+  if (req.body?.password === undefined) {
     return res.status(400).send("Please insert password");
   }
 
