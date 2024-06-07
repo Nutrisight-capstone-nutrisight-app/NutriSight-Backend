@@ -3,25 +3,22 @@ import { Prisma } from "../prisma/client.js";
 import bcrypt from "bcrypt";
 
 export const getUserById = async (req, res) => {
-  const id = req.params.id;
-  const user = await prisma.user.findUnique({
-    where: {
-      id: id,
-    },
-  });
+  const user = await prisma.user.findUnique({ where: { id: req.user.id } });
   return res.json(user);
 };
 
 export const editUser = async (req, res) => {
-  const id = req.params.id;
+  const id = req.user.id;
 
-  try {
-    const saltRound = 10;
-    const password = await bcrypt.hash(req.body.password, saltRound);
-    req.body.password = password;
-  } catch (error) {
-    console.error("Error hashing password : ", error);
-    return res.status(500).json({ message: "Server error" });
+  if (req.body.password !== undefined) {
+    try {
+      const saltRound = 10;
+      const password = await bcrypt.hash(req.body.password, saltRound);
+      req.body.password = password;
+    } catch (error) {
+      console.error("Error hashing password : ", error);
+      return res.status(500).json({ message: "Server error" });
+    }
   }
 
   try {
@@ -55,7 +52,7 @@ export const editUser = async (req, res) => {
 };
 
 export const deleteUser = async (req, res) => {
-  const id = req.params.id;
+  const id = req.user.id;
   try {
     const user = await prisma.user.delete({
       where: {

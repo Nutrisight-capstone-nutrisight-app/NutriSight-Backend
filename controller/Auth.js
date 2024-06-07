@@ -4,33 +4,30 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export const authenticate = async (req, res) => {
-  console.log(req.body);
   const { email, password } = req.body;
 
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (!user)
+    return res.status(403).json({ error: "Invalid email or password" });
 
-    if (!user)
-      return res.status(403).json({ error: "Invalid email or password" });
+  const isValidPassword = await bcrypt.compare(password, user.password);
+  if (!isValidPassword)
+    return res.status(403).json({ error: "Invalid email or password" });
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword)
-      return res.status(403).json({ error: "Invalid email or password" });
+  const {id, username} = user
+  const accessToken = generateToken({id, username, email});
+  await prisma.accessToken.create({
+    data: {
+      value: accessToken,
+      userId: user.id,
+    },
+  });
 
-    const secret = process.env.JWT_ACCESS_SECRET;
-    const expiresIn = 60 * 60 * 0.25;
-    const token = jwt.sign(user, secret, { expiresIn: expiresIn });
-
-    user.token = token;
-    return res.json(user);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
+  return res.json({ accessToken: accessToken });
 };
 
 export const createUser = async (req, res) => {
@@ -56,22 +53,38 @@ export const createUser = async (req, res) => {
   const user = req.body;
 
   try {
-    const createUser = await prisma.user.create({
+    await prisma.user.create({
       data: user,
     });
+    return res.json({ message: "User successfully created" });
   } catch (error) {
+    console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      // The .code property can be accessed in a type-safe manner
       if (error.code === "P2002") {
-        console.log(
-          "There is a unique constraint violation, a new user cannot be created with this email or username"
-        );
+        return res
+          .status(400)
+          .json({ message: "Email or username already exist" });
       }
     }
-    return res.status(400).json({
-      message: "Email or username already exist",
-    });
   }
-
-  return res.json({ message: "User successfully created" });
 };
+
+export const deleteToken = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    await prisma.accessToken.delete({
+      where: {
+        userId: userId,
+      },
+    });
+    return res.status(203).json({ message: "Logout successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({ message: "User not found" });
+  }
+};
+
+function generateToken(user) {
+  // const expiresInHour = 60 * 60 * 0.25;
+  return jwt.sign(user, process.env.JWT_ACCESS_SECRET);
+}
