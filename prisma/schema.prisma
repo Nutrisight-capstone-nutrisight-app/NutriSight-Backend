@@ -27,6 +27,6 @@ model AccessToken {
   id        String   @id @default(uuid())
   value     String   @db.LongText
   createdAt DateTime @default(now())
-  user      User?    @relation(fields: [userId], references: [id])
-  userId    String?  @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
 }
