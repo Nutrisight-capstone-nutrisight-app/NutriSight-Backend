@@ -21,12 +21,47 @@ model User {
   createdAt   DateTime     @default(now())
   updateAt    DateTime     @updatedAt
   accessToken AccessToken?
+  saves       Save[]
+
+  @@index([email])
 }
 
 model AccessToken {
   id        String   @id @default(uuid())
   value     String   @db.LongText
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @unique
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+}
+
+model Save {
+  id              String            @id @default(uuid())
+  createdAt       DateTime          @default(now())
+  products        Product[]
+  ProductsOnSaves ProductsOnSaves[]
+
+  User   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
+}
+
+model Product {
+  id              String            @id @default(uuid())
+  name            String
+  createdAt       DateTime          @default(now())
+  updateAt        DateTime          @updatedAt
+  saves           Save[]
+  ProductsOnSaves ProductsOnSaves[]
+
+  @@index([name])
+}
+
+model ProductsOnSaves {
+  quantity  Int     @default(1)
+  save      Save    @relation(fields: [saveId], references: [id], onDelete: Cascade)
+  saveId    String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+
+  @@id([saveId, productId])
 }
