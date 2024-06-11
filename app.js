@@ -2,6 +2,7 @@ import express from "express";
 import { routerUser } from "./routes/User.js";
 import { routerAuth } from "./routes/Auth.js";
 import { routerProduct } from "./routes/Product.js";
+import { routerSave } from "./routes/Save.js";
 import { accessValidation } from "./middleware/UserAuth.js";
 
 // Express Setting
@@ -16,9 +17,10 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
   res.json({ message: "Nutrisight API v0.3.0 :Request Success" });
 });
+app.use("/product", routerProduct);
+app.use("/save", routerSave);
 app.use("/user", accessValidation, routerUser);
 app.use("/", routerAuth);
-app.use("/product", routerProduct);
 
 // Run Application
 app.listen(port, () => {
