@@ -18,8 +18,8 @@ export const authenticate = async (req, res) => {
   if (!isValidPassword)
     return res.status(403).json({ error: "Invalid email or password" });
 
-  const {id, username} = user
-  const accessToken = generateToken({id, username, email});
+  const { id, username } = user;
+  const accessToken = generateToken({ id, username, email });
   await prisma.accessToken.create({
     data: {
       value: accessToken,
@@ -27,7 +27,7 @@ export const authenticate = async (req, res) => {
     },
   });
 
-  return res.json({ accessToken: accessToken });
+  return res.status(200).json({ accessToken: accessToken });
 };
 
 export const createUser = async (req, res) => {
@@ -47,7 +47,7 @@ export const createUser = async (req, res) => {
     req.body.password = password;
   } catch (error) {
     console.error("Error hashing password:", error);
-    return res.status(500).json({ error });
+    return res.status(500).json({ error: "Server error" });
   }
 
   const user = req.body;
@@ -56,7 +56,7 @@ export const createUser = async (req, res) => {
     await prisma.user.create({
       data: user,
     });
-    return res.json({ message: "User successfully created" });
+    return res.status(200).json({ message: "User successfully created" });
   } catch (error) {
     console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

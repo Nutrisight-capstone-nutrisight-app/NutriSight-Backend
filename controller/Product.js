@@ -1,10 +1,13 @@
 import prisma from "../prisma/client.js";
-import { Prisma } from "../prisma/client.js";
 
 export const getProductById = async (req, res) => {
-  //   console.log(req.body.id);
   const product = await prisma.product.findUnique({
     where: { id: Number(req.params.id) },
   });
-  return res.json(product);
+
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+
+  return res.status(200).json({ product: product });
 };

@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 async function main() {
   const product = await prisma.product.create({
     data: {
+      id: 0,
       name: "Chitato",
       category: "Food",
       netWeight: 180,

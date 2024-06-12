@@ -1,30 +1,37 @@
-import { json } from "express";
 import prisma from "../prisma/client.js";
-import { Prisma } from "../prisma/client.js";
 
 export const createSave = async (req, res) => {
-  const productId = req.body.id;
-  const save = await prisma.save.create({
-    data: {},
-  });
-  if (req.body.id == null) {
+  const productId = req.body.productId;
+  if (productId == null) {
     return res.status(404).json({ message: "Id not Found" });
   }
+  console.log(req.user.id);
+  const userId = req.user.id;
+  const save = await prisma.save.create({
+    data: {
+      userId: userId,
+    },
+  });
   const productOnSave = await prisma.productsOnSaves.create({
     data: {
       saveId: save.id,
       productId: productId,
     },
   });
+
   return res.status(200).json({ message: "save successful" });
 };
 
-export const getSavedbyId = async (req, res) => {
-  if (req.params.id == null) {
-    return res.status(404).json({ message: "Id not Found" });
-  }
-  const savedProduct = await prisma.save.findUnique({
-    where: { id: req.params.id },
+export const getSavedByUserId = async (req, res) => {
+  const savedProduct = await prisma.save.findMany({
+    where: { userId: req.user.id },
+    include: {
+      ProductsOnSaves: {
+        include: {
+          product: true,
+        },
+      },
+    },
   });
-  return res.json(savedProduct);
+  return res.status(200).json({ savedProduct: savedProduct });
 };

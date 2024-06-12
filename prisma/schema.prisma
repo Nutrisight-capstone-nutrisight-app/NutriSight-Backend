@@ -38,7 +38,7 @@ model AccessToken {
 model Save {
   id              String            @id @default(uuid())
   createdAt       DateTime          @default(now())
-  products        Product[]
+  
   ProductsOnSaves ProductsOnSaves[]
 
   User   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -46,7 +46,7 @@ model Save {
 }
 
 model Product {
-  id              Int               @id @default(autoincrement())
+  id              Int               @id 
   name            String
   category        String
   netWeight       Float
@@ -70,7 +70,7 @@ model Product {
   levelAll        Int
   createdAt       DateTime          @default(now())
   updateAt        DateTime          @updatedAt
-  saves           Save[]
+  
   ProductsOnSaves ProductsOnSaves[]
 
   @@index([name])

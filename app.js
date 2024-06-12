@@ -18,8 +18,8 @@ app.get("/", (req, res) => {
   res.json({ message: "Nutrisight API v0.3.0 :Request Success" });
 });
 app.use("/product", routerProduct);
-app.use("/save", routerSave);
 app.use("/user", accessValidation, routerUser);
+app.use("/save", accessValidation, routerSave);
 app.use("/", routerAuth);
 
 // Run Application

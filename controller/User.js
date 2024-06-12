@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 export const getUserById = async (req, res) => {
   const user = await prisma.user.findUnique({ where: { id: req.user.id } });
-  return res.json(user);
+  return res.status(200).json({ user: user });
 };
 
 export const editUser = async (req, res) => {
@@ -48,7 +48,7 @@ export const editUser = async (req, res) => {
     }
   }
 
-  return res.json({ message: "User successfully edited" });
+  return res.status(200).json({ message: "User successfully edited" });
 };
 
 export const deleteUser = async (req, res) => {
@@ -60,7 +60,7 @@ export const deleteUser = async (req, res) => {
         id: id,
       },
     });
-    return res.json({ message: "user has been deleted" });
+    return res.status(200).json({ message: "user has been deleted" });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
