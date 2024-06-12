@@ -5,7 +5,7 @@ export const createSave = async (req, res) => {
   if (productId == null) {
     return res.status(404).json({ message: "Id not Found" });
   }
-  console.log(req.user.id);
+
   const userId = req.user.id;
   const save = await prisma.save.create({
     data: {
@@ -25,9 +25,10 @@ export const createSave = async (req, res) => {
 export const getSavedByUserId = async (req, res) => {
   const savedProduct = await prisma.save.findMany({
     where: { userId: req.user.id },
-    include: {
+    select: {
+      createdAt: true,
       ProductsOnSaves: {
-        include: {
+        select: {
           product: true,
         },
       },
