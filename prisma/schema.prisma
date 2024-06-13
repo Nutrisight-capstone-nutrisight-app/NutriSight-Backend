@@ -36,9 +36,9 @@ model AccessToken {
 }
 
 model Save {
-  id              String            @id @default(uuid())
-  createdAt       DateTime          @default(now())
-  
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
   ProductsOnSaves ProductsOnSaves[]
 
   User   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -46,31 +46,30 @@ model Save {
 }
 
 model Product {
-  id              Int               @id 
-  name            String
-  category        String
-  netWeight       Float
-  servingAmount   Float
-  servingSize     Float
-  energyTotal     Int
-  energyFat       Int
-  fatTotal        Float
-  saturatedFat    Float
-  protein         Int
-  carbohydrate    Int
-  sugar           Float
-  natrium         Int
-  fatGrade        String
-  fatLevel        Int
-  sugarGrade      String
-  sugarLevel      Int
-  natriumGrade    String
-  natriumLevel    Int
-  gradeAll        String
-  levelAll        Int
-  createdAt       DateTime          @default(now())
-  updateAt        DateTime          @updatedAt
-  
+  id            Int    @id
+  name          String
+  category      String
+  netWeight     Float
+  servingAmount Float
+  servingSize   Float
+  energyTotal   Int
+  energyFat     Int
+  fatTotal      Float
+  saturatedFat  Float
+  protein       Int
+  carbohydrate  Int
+  sugar         Float
+  natrium       Int
+  fatGrade      String
+  fatLevel      Int
+  sugarGrade    String
+  sugarLevel    Int
+  natriumGrade  String
+  natriumLevel  Int
+  gradeAll      String
+  levelAll      Int
+  url           String
+
   ProductsOnSaves ProductsOnSaves[]
 
   @@index([name])
