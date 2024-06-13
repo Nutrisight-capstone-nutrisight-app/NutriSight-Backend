@@ -22,13 +22,13 @@ API URL `http://localhost:3000`
 
 - POST /register
 
-  - Require
+  - Require body
 
-  | Parameter |  Type  |
-  | :-------: | :----: |
-  | username  | String |
-  |   email   | String |
-  | password  | String |
+  |   Key    |  Type  |
+  | :------: | :----: |
+  | username | String |
+  |  email   | String |
+  | password | String |
 
   - Response:
 
@@ -42,12 +42,12 @@ API URL `http://localhost:3000`
 
 - POST /login
 
-  - Require
+  - Require body
 
-  | Parameter |  Type  |
-  | :-------: | :----: |
-  |   email   | String |
-  | password  | String |
+  |   Key    |  Type  |
+  | :------: | :----: |
+  |  email   | String |
+  | password | String |
 
   - Response
 
@@ -92,6 +92,14 @@ API URL `http://localhost:3000`
 2. Edit User
 
 - PATCH /user/[user_id]
+
+  - Optional body
+
+    |   Key    |  Type  |
+    | :------: | :----: |
+    |  email   | String |
+    | username | String |
+    | password | String |
 
   - Response
 
