@@ -72,7 +72,7 @@ POST /register
   { "error": "Server error" }
   ```
 
-1. Account Login
+2. Account Login
 
 The account login will authenticate user and response with the token that need to be send in some endpoint that need access with authorization bearer.
 
@@ -105,7 +105,7 @@ POST /login
   { "error": "Invalid email or password" }
   ```
 
-1. Account Logout
+3. Account Logout
 
 ```http
 DELETE /logout
@@ -221,7 +221,7 @@ PATCH /user
   { "message": "Server error" }
   ```
 
-1. Delete User
+3. Delete User
 
 Delete all the data of currently logged-in user
 
@@ -245,4 +245,177 @@ DELETE /user
 
   ```json
   { "message": "User not Found" }
+  ```
+
+### Save Endpoint
+
+1. Save product
+
+Create data about the product that saveded by the user
+
+```http
+POST /save
+```
+
+- **Require Header**
+
+**Authorization** : Bearer {accessToken}
+
+- **Optional body**
+
+  |    Key    | Type |
+  | :-------: | :--: |
+  | productId | Int  |
+
+- **Response**
+
+  - **Code 200**
+
+  ```json
+  { "message": "save successful" }
+  ```
+
+  - **Code 400**
+
+  When productId is not on request
+
+  ```json
+  { "message": "Id not Found" }
+  ```
+
+2. Get saved product
+
+Get all product saved by user
+
+```http
+GET /save
+```
+
+- **Require Header**
+
+**Authorization** : Bearer {accessToken}
+
+- **Response**
+
+  - **Code 200**
+
+  ```json
+  {
+    "savedProduct": [
+      {
+        "createdAt": "2024-06-14T15:04:39.128Z",
+        "ProductsOnSaves": [
+          {
+            "product": {
+              "id": 0,
+              "name": "Chitato",
+              "category": "Food",
+              "netWeight": 180,
+              "servingAmount": 9,
+              "servingSize": 20,
+              "energyTotal": 100,
+              "energyFat": 40,
+              "fatTotal": 4.5,
+              "saturatedFat": 2,
+              "protein": 0,
+              "carbohydrate": 15,
+              "sugar": 1,
+              "natrium": 60,
+              "fatGrade": "B",
+              "fatLevel": 2,
+              "sugarGrade": "A",
+              "sugarLevel": 1,
+              "natriumGrade": "A",
+              "natriumLevel": 1,
+              "gradeAll": "B",
+              "levelAll": 2,
+              "url": "https://storage.googleapis.com/nutrisight-bucket/images/chitato.png"
+            }
+          }
+        ]
+      },
+      {
+        "createdAt": "2024-06-14T15:04:47.261Z",
+        "ProductsOnSaves": [
+          {
+            "product": {
+              "id": 3,
+              "name": "Fitbar",
+              "category": "Food",
+              "netWeight": 20,
+              "servingAmount": 1,
+              "servingSize": 20,
+              "energyTotal": 90,
+              "energyFat": 30,
+              "fatTotal": 3.5,
+              "saturatedFat": 2,
+              "protein": 2,
+              "carbohydrate": 15,
+              "sugar": 6,
+              "natrium": 40,
+              "fatGrade": "A",
+              "fatLevel": 1,
+              "sugarGrade": "A",
+              "sugarLevel": 1,
+              "natriumGrade": "A",
+              "natriumLevel": 1,
+              "gradeAll": "A",
+              "levelAll": 1,
+              "url": "https://storage.googleapis.com/nutrisight-bucket/images/fitbar.png"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  ```
+
+### Product Endpoint
+
+1. Get product
+
+Get detail of a product using product id
+
+```http
+POST /product/{id}
+```
+
+- **Response**
+
+  - **Code 200**
+
+  ```json
+  {
+    "product": {
+      "id": 0,
+      "name": "Chitato",
+      "category": "Food",
+      "netWeight": 180,
+      "servingAmount": 9,
+      "servingSize": 20,
+      "energyTotal": 100,
+      "energyFat": 40,
+      "fatTotal": 4.5,
+      "saturatedFat": 2,
+      "protein": 0,
+      "carbohydrate": 15,
+      "sugar": 1,
+      "natrium": 60,
+      "fatGrade": "B",
+      "fatLevel": 2,
+      "sugarGrade": "A",
+      "sugarLevel": 1,
+      "natriumGrade": "A",
+      "natriumLevel": 1,
+      "gradeAll": "B",
+      "levelAll": 2,
+      "url": "https://storage.googleapis.com/nutrisight-bucket/images/chitato.png"
+    }
+  }
+  ```
+
+  - **Code 404**
+
+  ```json
+  { "message": "Product not found" }
   ```
