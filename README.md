@@ -2,11 +2,9 @@
 
 This documentation will help to understand how to use this API
 
----
+## Run API in Local
 
 API URL `http://localhost:3000`
-
-## Run API in Local
 
 1. clone this repository `https://github.com/Nutrisight-capstone-nutrisight-app/NutriSight-Backend.git`
 2. open new terminal and run `npm ci` for install all existing dependencies or `npm i` for update current dependencies
@@ -16,13 +14,19 @@ API URL `http://localhost:3000`
 6. lastly, run `npm run dev` on your terminal
 7. the server will run successfully
 
-### Auth Endpoint
+### Authentication Endpoints
 
-1. Register
+If user accessing some endpoint that need to authenticate themself, the API will respond with unauthorize.
 
-- POST /register
+1. Account Registration
 
-  - Require body
+User need to create their account first before they can authenticate themself
+
+```http
+POST /register
+```
+
+- **Require body**
 
   |   Key    |  Type  |
   | :------: | :----: |
@@ -30,92 +34,175 @@ API URL `http://localhost:3000`
   |  email   | String |
   | password | String |
 
-  - Response:
+- **Response**
 
+  - **Code 200**
+
+  Sucessfully created user account
+
+  ```json
+  { "message": "User successfully created" }
   ```
-  {
-  "message": "User successfully created"
-  }
+
+  - **Code 400**
+
+  When one of require body input is null
+
+  ```json
+  { "message": "Please insert email" }
   ```
 
-2. Login
+  ```json
+  { "message": "Please insert username" }
+  ```
 
-- POST /login
+  ```json
+  { "message": "Please insert password" }
+  ```
 
-  - Require body
+  When user input username or email that already exist
+
+  ```json
+  { "message": "Email or username already exist" }
+  ```
+
+  - **Code 500**
+
+  When server is error
+
+  ```json
+  { "error": "Server error" }
+  ```
+
+1. Account Login
+
+The account login will authenticate user and response with the token that need to be send in some endpoint that need access with authorization bearer.
+
+```http
+POST /login
+```
+
+- **Require body**
 
   |   Key    |  Type  |
   | :------: | :----: |
   |  email   | String |
   | password | String |
 
-  - Response
+- **Response**
 
-  ```
+  - **Code 200**
+
+  ```json
   {
-  "accessToken":
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
   }
   ```
 
-3. Logout
+  - **Code 403**
 
-- DELETE /logout
-  -Response
+  ```json
+  { "error": "Invalid email or password" }
   ```
-  {
-  "message": "Logout successfully"
-  }
+
+1. Account Logout
+
+```http
+DELETE /logout
+```
+
+- **Response**
+
+  - **Code 203**
+
+  ```json
+  { "message": "Logout successfully" }
+  ```
+
+  - **Code 404**
+
+  ```json
+  { "message": "User not found" }
   ```
 
 ### User Endpoint
 
-1. Get User by Id
+1. Logged on User Detail
 
-- GET /user/[user_id]
-  - Response
-  ```
+```http
+GET /user
+```
+
+- **Response**
+
+  - **Code 200**
+
+  ```json
   {
-  "user": {
+    "user": {
       "username": "hade",
       "email": "oikawa2@test.com"
-  },
-  "data": {
+    },
+    "data": {
       "foodCal": 0,
       "drinkCal": 0,
       "totalCal": 0,
       "gradeAvg": "E",
       "saveAmount": 0
-      }
+    }
   }
   ```
 
 2. Edit User
 
-- PATCH /user/[user_id]
+```http
+PATCH /user
+```
 
-  - Optional body
+- **Optional body**
 
-    |   Key    |  Type  |
-    | :------: | :----: |
-    |  email   | String |
-    | username | String |
-    | password | String |
+  |   Key    |  Type  |
+  | :------: | :----: |
+  |  email   | String |
+  | username | String |
+  | password | String |
 
-  - Response
+- **Response**
 
+  - **Code 200**
+
+  ```json
+  { "message": "User successfully edited" }
   ```
-  {
-  "message": "User successfully edited"
-  }
 
+  - **Code 400**
+
+  ```json
+  { "message": "Email or username already exist" }
   ```
 
-3. Delete User
+  - **Code 500**
 
-- DELETE /user/[user_id]
-  - Response
+  ```json
+  { "message": "Server error" }
   ```
-  {
-  "message": "user has been deleted"
-  }
+
+1. Delete User
+
+```http
+DELETE /user
+```
+
+- **Response**
+
+  - **Code 200**
+
+  ```json
+  { "message": "user has been deleted" }
+  ```
+
+  - **Code 400**
+
+  ```json
+  { "message": "User not Found" }
   ```
