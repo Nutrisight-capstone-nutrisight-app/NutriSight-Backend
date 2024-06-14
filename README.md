@@ -68,8 +68,6 @@ POST /register
 
   - **Code 500**
 
-  When server is error
-
   ```json
   { "error": "Server error" }
   ```
@@ -101,6 +99,8 @@ POST /login
 
   - **Code 403**
 
+  When the request email and password do not match in the database
+
   ```json
   { "error": "Invalid email or password" }
   ```
@@ -110,6 +110,10 @@ POST /login
 ```http
 DELETE /logout
 ```
+
+- **Require Header**
+
+**Authorization** : Bearer {accessToken}
 
 - **Response**
 
@@ -125,13 +129,31 @@ DELETE /logout
   { "message": "User not found" }
   ```
 
+4. Unauthorize Response
+
+When user access endpoint that need a bearer token, and they are not send the token in request header, this response will pop up
+
+- **Response**
+
+  - **Code 401**
+
+  ```json
+  { "message": "Unautorized, token is missing or invalid" }
+  ```
+
 ### User Endpoint
 
 1. Logged on User Detail
 
+Get user details of the currently logged-in user
+
 ```http
 GET /user
 ```
+
+- **Require Header**
+
+**Authorization** : Bearer {accessToken}
 
 - **Response**
 
@@ -155,9 +177,15 @@ GET /user
 
 2. Edit User
 
+Edit and update the data of currently logged-in user
+
 ```http
 PATCH /user
 ```
+
+- **Require Header**
+
+**Authorization** : Bearer {accessToken}
 
 - **Optional body**
 
@@ -181,6 +209,12 @@ PATCH /user
   { "message": "Email or username already exist" }
   ```
 
+  - **Code 404**
+
+  ```json
+  { "message": "User not Found" }
+  ```
+
   - **Code 500**
 
   ```json
@@ -189,9 +223,15 @@ PATCH /user
 
 1. Delete User
 
+Delete all the data of currently logged-in user
+
 ```http
 DELETE /user
 ```
+
+- **Require Header**
+
+**Authorization** : Bearer {accessToken}
 
 - **Response**
 
@@ -201,7 +241,7 @@ DELETE /user
   { "message": "user has been deleted" }
   ```
 
-  - **Code 400**
+  - **Code 404**
 
   ```json
   { "message": "User not Found" }
