@@ -41,7 +41,7 @@ export const getUserById = async (req, res) => {
   }
 
   const totalCal = foodCal + drinkCal;
-  let gradeAvg = gradeTotal / save.length;
+  let gradeAvg = Math.ceil(gradeTotal / save.length);
   if (!gradeAvg) {
     gradeAvg = 0;
   }
@@ -67,7 +67,7 @@ export const getUserById = async (req, res) => {
       gradeAvg = "E";
       break;
   }
-  
+
   const data = {
     foodCal: foodCal,
     drinkCal: drinkCal,
